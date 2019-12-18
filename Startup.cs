@@ -18,7 +18,14 @@ namespace aspnetcore_demo
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.Run(context => context.Response.WriteAsync("Hello World!"));
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Hello World!");
+                });
+            });        
         }
     }
 }
