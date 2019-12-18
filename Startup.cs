@@ -20,9 +20,22 @@ namespace aspnetcore_demo
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config)
         {
+            if(env.IsDevelopment()){
+                app.UseDeveloperExceptionPage();
+            }else{
+                app.UseExceptionHandler("/Error");
+            }
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+               endpoints.MapGet("/ThrowException/", async context =>
+                {
+                    await Task.FromException(new InvalidOperationException("無效的操作"));
+                });
+                endpoints.MapGet("/Error/", async context =>
+                {
+                    await context.Response.WriteAsync("Error");
+                });
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Hello World!" +config.GetValue<string>("Message"));
