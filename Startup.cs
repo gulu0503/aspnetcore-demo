@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+
 
 namespace aspnetcore_demo
 {
@@ -16,14 +18,14 @@ namespace aspnetcore_demo
         {
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config)
         {
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    await context.Response.WriteAsync("Hello World!" +config.GetValue<string>("Message"));
                 });
             });        
         }
