@@ -18,7 +18,7 @@ namespace aspnetcore_demo
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.Configure(app => app.Run(context => context.Response.WriteAsync("Hello World!")));
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }
