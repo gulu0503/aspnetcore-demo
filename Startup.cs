@@ -21,6 +21,8 @@ namespace aspnetcore_demo {
             } else {
                 app.UseExceptionHandler ("/Error");
             }
+                        app.UseHttpsRedirection();
+
             app.UseStaticFiles (); // For the wwwroot folder
 
             //利用PhysicalFileProvider讀取靜態檔案
@@ -40,6 +42,7 @@ namespace aspnetcore_demo {
                         Path.Combine (Directory.GetCurrentDirectory (), "wwwroot", "images")),
                     RequestPath = "/MyImages"
             });
+
             app.UseRouting ();
             app.UseEndpoints (endpoints => {
                 endpoints.MapGet ("/ThrowException/", async context => {
