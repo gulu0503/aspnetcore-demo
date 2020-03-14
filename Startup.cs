@@ -12,14 +12,21 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace aspnetcore_demo {
     public class Startup {
         public void ConfigureServices (IServiceCollection services) {
             services.AddDbContext<ProductContext>(options => options.UseSqlite("Data Source=product.db"));
+
+            var configBuilder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("test.json", optional: true);
+            var config = configBuilder.Build();
+            services.Configure<TestOptions>(config);
         }
 
-        public void Configure (IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config,ILogger<Startup> logger, ProductContext productContext) {
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config,ILogger<Startup> logger, ProductContext productContext, IOptions<TestOptions> testOptions) {
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
             } else {
@@ -58,7 +65,7 @@ namespace aspnetcore_demo {
                 });
                 endpoints.MapGet ("/", async context => {
                     logger.LogInformation("Test Log");
-                    await context.Response.WriteAsync ("Hello World!" + config.GetValue<string> ("Message")+ productCount);
+                    await context.Response.WriteAsync ("Hello World!" + config.GetValue<string> ("Message")+ productCount+ testOptions.Value.TestOption1 + testOptions.Value.TestOption2);
                 });
             });
         }
