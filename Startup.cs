@@ -11,12 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace aspnetcore_demo {
     public class Startup {
-        public void ConfigureServices (IServiceCollection services) { }
+        public void ConfigureServices (IServiceCollection services) {
+            services.AddDbContext<ProductContext>(options => options.UseSqlite("Data Source=product.db"));
+        }
 
-        public void Configure (IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config,ILogger<Startup> logger) {
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config,ILogger<Startup> logger, ProductContext productContext) {
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
             } else {
@@ -44,6 +47,7 @@ namespace aspnetcore_demo {
                     RequestPath = "/MyImages"
             });
 
+            var productCount=productContext.Products.Count();
             app.UseRouting ();
             app.UseEndpoints (endpoints => {
                 endpoints.MapGet ("/ThrowException/", async context => {
@@ -54,10 +58,6 @@ namespace aspnetcore_demo {
                 });
                 endpoints.MapGet ("/", async context => {
                     logger.LogInformation("Test Log");
-                    int productCount;
-                    using(var db=new ProductContext()){
-                        productCount=db.Products.Count();
-                    }
                     await context.Response.WriteAsync ("Hello World!" + config.GetValue<string> ("Message")+ productCount);
                 });
             });
