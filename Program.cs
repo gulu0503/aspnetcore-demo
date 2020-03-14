@@ -25,6 +25,8 @@ namespace aspnetcore_demo
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel();//不用寫預設就會UseKestrel了
+                    webBuilder.UseUrls("http://localhost:6000/","https://localhost:6001/");
                 });
     }
 }
