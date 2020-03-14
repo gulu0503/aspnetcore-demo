@@ -54,7 +54,11 @@ namespace aspnetcore_demo {
                 });
                 endpoints.MapGet ("/", async context => {
                     logger.LogInformation("Test Log");
-                    await context.Response.WriteAsync ("Hello World!" + config.GetValue<string> ("Message"));
+                    int productCount;
+                    using(var db=new ProductContext()){
+                        productCount=db.Products.Count();
+                    }
+                    await context.Response.WriteAsync ("Hello World!" + config.GetValue<string> ("Message")+ productCount);
                 });
             });
         }
