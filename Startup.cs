@@ -10,18 +10,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace aspnetcore_demo {
     public class Startup {
         public void ConfigureServices (IServiceCollection services) { }
 
-        public void Configure (IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config) {
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env, IConfiguration config,ILogger<Startup> logger) {
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
             } else {
                 app.UseExceptionHandler ("/Error");
             }
-                        app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles (); // For the wwwroot folder
 
@@ -52,6 +53,7 @@ namespace aspnetcore_demo {
                     await context.Response.WriteAsync ("Error");
                 });
                 endpoints.MapGet ("/", async context => {
+                    logger.LogInformation("Test Log");
                     await context.Response.WriteAsync ("Hello World!" + config.GetValue<string> ("Message"));
                 });
             });
